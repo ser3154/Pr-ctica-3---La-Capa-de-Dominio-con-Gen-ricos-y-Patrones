@@ -18,11 +18,9 @@
 //  enterarse al compilar, no cuando el usuario ve la pantalla en blanco.
 // =====================================================================
 
-import type {
-  PrestamoResponseDto,
-  CrearPrestamoRequestDto,
-  ErrorResponseDto,
-} from '../contratos/prestamo.dto.js';
+import { CrearPrestamoRequestDto, ErrorResponseDto, PrestamoResponseDto } from "../contrato/prestamo-response.dto.js";
+
+
 
 // ---------------------------------------------------------------------
 //  Referencias al DOM
@@ -77,7 +75,7 @@ form.addEventListener('submit', async (ev) => {
   if (res.status === 201) {
     const creado = (await res.json()) as PrestamoResponseDto;
     mostrarEstado(201, creado);
-    await recargarLista(creado.libroId);
+    await recargarLista(creado.libroID);
   } else {
     const error = (await res.json()) as ErrorResponseDto;
     mostrarEstado(res.status, error);

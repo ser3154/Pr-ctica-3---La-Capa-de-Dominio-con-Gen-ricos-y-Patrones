@@ -6,7 +6,7 @@
 
 import { InMemoryPrestamoRepository } from './infra/in-memory-prestamo.repository.js';
 import { PrestamoService } from './servicios/prestamo.service.js';
-import { aResponseDto } from './dto/prestamo-response.dto.js';
+import { aResponseDto } from './contrato/prestamo-response.dto.js';
 import { EjemplarPrestadoError } from './errores/ejemplar-prestado.error.js';
 
 async function main(): Promise<void> {
