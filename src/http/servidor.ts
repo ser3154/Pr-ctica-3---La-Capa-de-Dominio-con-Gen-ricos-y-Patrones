@@ -3,6 +3,10 @@ import { InMemoryPrestamoRepository } from '../infra/in-memory-prestamo.reposito
 import { PrestamoService } from '../servicios/prestamo.service.js';
 import { aResponseDto, ErrorResponseDto } from '../contrato/prestamo-response.dto.js';
 import { validarCrearPrestamo } from './validar.js';
+import { ValidacionError } from './errores-http.js';
+import { EjemplarPrestadoError } from '../errores/ejemplar-prestado.error.js';
+import type { Request, Response, NextFunction } from 'express';
+
 
 const PORT = 3000;
 
@@ -41,6 +45,34 @@ app.post('/api/prestamos', async(req, res) => {
 
     res.status(201).json(aResponseDto(prestamo));
 })
+
+app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
+    if (err instanceof ValidacionError) {
+        const error: ErrorResponseDto = {
+            error: 'VALIDACION',
+            mensaje: err.message,
+            detalles: err.detalle
+        };
+        res.status(400).json(error);
+        return;
+    }
+
+    if (err instanceof EjemplarPrestadoError) {
+        const error: ErrorResponseDto = {
+            error: 'EJEMPLAR_PRESTADO',
+            mensaje: err.message
+        };
+        res.status(409).json(error);
+        return;
+    }
+
+    console.error(err);
+    const error: ErrorResponseDto = {
+        error: 'ERROR_INTERNO',
+        mensaje: 'Ocurrio un error inesperado'
+    };
+    res.status(500).json(error);
+});
 
 app.listen(PORT, ()=> {
     console.log("El servidor esta corriendo en el puerto" + PORT);
